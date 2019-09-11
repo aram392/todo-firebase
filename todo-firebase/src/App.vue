@@ -1,17 +1,38 @@
 <template>
   <div id="app">
     <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <List></List>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import List from './components/List.vue'
+import db from './db'
 
 export default {
   name: 'app',
   components: {
-    HelloWorld
+    List
+  },
+  data() {
+    return{
+      todos: []
+    }
+  },
+  methods:{
+    created(){
+      db.collection("todo").get()
+      .then((snapshot) => {
+        console.log("documents");
+        snapshot.forEach((doc) => {
+          console.log(doc.id, '=>', doc.data());
+          [...this.todos,doc];
+        });
+      })
+      .catch((err) => {
+        console.log('Error getting documents', err);
+      });
+    }
   }
 }
 </script>
